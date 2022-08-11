@@ -1,7 +1,7 @@
-import TokenType from './token-type.ts';
-import Token from './token.ts';
-import { error } from './index.ts';
-import { Literal } from './utils.ts';
+import TokenType from "./token-type.ts";
+import Token from "./token.ts";
+import { error } from "./index.ts";
+import { Literal } from "./utils.ts";
 
 export default class Scanner {
   private readonly source: string;
@@ -31,40 +31,78 @@ export default class Scanner {
     return this.current >= this.source.length;
   }
 
-  // Consumes the character and outputs the right type (or errors) 
+  // Consumes the character and outputs the right type (or errors)
   private scanToken(): void {
     const c: string = this.advance();
     switch (c) {
-      case '(': this.addToken(TokenType.LEFT_PAREN); break;
-      case ')': this.addToken(TokenType.RIGHT_PAREN); break;
-      case '{': this.addToken(TokenType.LEFT_BRACE); break;
-      case '}': this.addToken(TokenType.RIGHT_BRACE); break;
-      case ',': this.addToken(TokenType.COMMA); break;
-      case '.': this.addToken(TokenType.DOT); break;
-      case '-': this.addToken(TokenType.MINUS); break;
-      case '+': this.addToken(TokenType.PLUS); break;
-      case ';': this.addToken(TokenType.SEMICOLON); break;
-      case '*': this.addToken(TokenType.STAR); break;
-      case '!': this.addToken(this.match('=') ? TokenType.BANG_EQUAL : TokenType.BANG); break;
-      case '=': this.addToken(this.match('=') ? TokenType.EQUAL_EQUAL : TokenType.EQUAL); break;
-      case '<': this.addToken(this.match('=') ? TokenType.LESS_EQUAL : TokenType.LESS); break;
-      case '>': this.addToken(this.match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER); break;
-      case '/':
-        if (this.match('/')) {
-          while (this.peek() !== '\n' && !this.isAtEnd()) {
+      case "(":
+        this.addToken(TokenType.LEFT_PAREN);
+        break;
+      case ")":
+        this.addToken(TokenType.RIGHT_PAREN);
+        break;
+      case "{":
+        this.addToken(TokenType.LEFT_BRACE);
+        break;
+      case "}":
+        this.addToken(TokenType.RIGHT_BRACE);
+        break;
+      case ",":
+        this.addToken(TokenType.COMMA);
+        break;
+      case ".":
+        this.addToken(TokenType.DOT);
+        break;
+      case "-":
+        this.addToken(TokenType.MINUS);
+        break;
+      case "+":
+        this.addToken(TokenType.PLUS);
+        break;
+      case ";":
+        this.addToken(TokenType.SEMICOLON);
+        break;
+      case "*":
+        this.addToken(TokenType.STAR);
+        break;
+      case "!":
+        this.addToken(this.match("=") ? TokenType.BANG_EQUAL : TokenType.BANG);
+        break;
+      case "=":
+        this.addToken(
+          this.match("=") ? TokenType.EQUAL_EQUAL : TokenType.EQUAL,
+        );
+        break;
+      case "<":
+        this.addToken(this.match("=") ? TokenType.LESS_EQUAL : TokenType.LESS);
+        break;
+      case ">":
+        this.addToken(
+          this.match("=") ? TokenType.GREATER_EQUAL : TokenType.GREATER,
+        );
+        break;
+      case "/":
+        if (this.match("/")) {
+          while (this.peek() !== "\n" && !this.isAtEnd()) {
             this.advance();
           }
         } else {
           this.addToken(TokenType.SLASH);
         }
         break;
-      case '"': this.string(); break;
-      case ' ':
-      case '\r':
-      case '\t':
+      case '"':
+        this.string();
         break;
-      case '\n': this.line++; break;
-      default: error(this.line, `Unexpected character '${c}'`); break;
+      case " ":
+      case "\r":
+      case "\t":
+        break;
+      case "\n":
+        this.line++;
+        break;
+      default:
+        error(this.line, `Unexpected character '${c}'`);
+        break;
     }
   }
 
@@ -84,21 +122,23 @@ export default class Scanner {
 
   // Look-ahead 1 char (no consuming)
   private peek(): string {
-    if (this.isAtEnd()) return '\0';
+    if (this.isAtEnd()) return "\0";
     return this.source.charAt(this.current);
   }
 
   private addToken(type: TokenType): void;
   private addToken(type: TokenType, literal: Literal): void;
-  
+
   private addToken(type: TokenType, literal?: Literal): void {
     const text: string = this.source.substring(this.start, this.current);
-    this.tokens.push(new Token(type, text, (literal == undefined ? null : literal), this.line));
+    this.tokens.push(
+      new Token(type, text, literal == undefined ? null : literal, this.line),
+    );
   }
 
   private string(): void {
     while (this.peek() !== '"' && !this.isAtEnd()) {
-      if (this.peek() === '\n') this.line++;
+      if (this.peek() === "\n") this.line++;
       this.advance();
     }
 
@@ -108,8 +148,11 @@ export default class Scanner {
     }
 
     this.advance();
-    
-    const value: string = this.source.substring(this.start + 1, this.current - 1);
+
+    const value: string = this.source.substring(
+      this.start + 1,
+      this.current - 1,
+    );
     this.addToken(TokenType.STRING, value);
   }
-};
+}

@@ -1,5 +1,5 @@
-import Token from './token.ts';
-import Scanner from './scanner.ts';
+import Token from "./token.ts";
+import Scanner from "./scanner.ts";
 
 let hadError = false;
 

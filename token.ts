@@ -1,5 +1,5 @@
-import TokenType from './token-type.ts';
-import { Literal } from './utils.ts';
+import TokenType from "./token-type.ts";
+import { Literal } from "./utils.ts";
 
 export default class Token {
   readonly type: TokenType;
@@ -17,4 +17,4 @@ export default class Token {
   public toString(): string {
     return `${this.type} ${this.lexeme} ${this.literal}`;
   }
-};
+}
