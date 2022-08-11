@@ -30,19 +30,19 @@ function runPrompt() {
 
 function run(source: string) {
   const scanner = new Scanner(source);
-  const tokens: [Token] = scanner.scanTokens();
+  const tokens: Token[] = scanner.scanTokens();
 
   for (let token in tokens) {
     console.log(token);
   }
 }
 
-function error(line: int, message: string) {
+export function error(line: number, message: string) {
   report(line, "", message);
 }
 
-function report(line: int, where: string, message: string) {
-  console.error(`[line ${line}] Error ${where}: ${message}`);
+function report(line: number, where: string, message: string) {
+  console.error(`[Line ${line}] Error${where}: ${message}`);
   hadError = true;
 }
 
